@@ -289,7 +289,6 @@ void loop() {
    if(currentMillis - onePreviousInterval > 1000) {
       onePreviousInterval = currentMillis;  
 
-    lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("Temp: ");
     lcd.print(GetTemp());
@@ -298,7 +297,8 @@ void loop() {
     lcd.print("VCC:  ");
     lcd.print(GetVin());
     lcd.print("B ");
-    lcd.print(TinyGPS::library_version());   
+    lcd.print(TinyGPS::library_version());
+    lcd.print("  ");
    }
   }
   
@@ -899,7 +899,12 @@ void print_gps_stat() {
 
   gps.stats(&chars, &sentences, &failed_checksum);
   
-  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("                ");
+  lcd.setCursor(0,1);
+  lcd.print("                ");
+  
+  
   lcd.setCursor(0,0);
   lcd.print(chars);
   lcd.print(" ");
@@ -916,7 +921,6 @@ void print_gps_stat() {
   else if (fix_age > 5000)
    lcd.print("Error stale data");
   else {
-   lcd.clear();
    lcd.setCursor(0,0);
    lcd.print("Lat: ");
    lcd.print(flat);
@@ -943,7 +947,7 @@ void simple_date() {
   int month = bcdToDec(Wire.read());
   int year = bcdToDec(Wire.read());
 
-  lcd.clear();
+//  lcd.clear();
 
   lcd.setCursor(0,0);
   
@@ -956,6 +960,7 @@ void simple_date() {
     lcd.print(":");
     if (second < 10) lcd.print("0"); 
     lcd.print(second,DEC);
+    lcd.print("  ");
 
    lcd.setCursor(0,1);
 
@@ -967,6 +972,7 @@ void simple_date() {
     lcd.print(month); 
     lcd.print("-");
     lcd.print(year,DEC);
+    lcd.print("  ");
   
 }
 
