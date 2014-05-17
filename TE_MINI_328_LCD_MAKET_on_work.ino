@@ -926,7 +926,7 @@ void print_gps_stat() {
 
   if (fix_age == TinyGPS::GPS_INVALID_AGE) {
    lcd.print("No fix detected ");
-   Green_Red(GREEN); 
+   Green_Red(RED); 
    lcd.setCursor(0,0);
    lcd.print(chars);
    lcd.print(" ");
@@ -942,8 +942,10 @@ void print_gps_stat() {
    lcd.print(sentences);
    lcd.print(" ");
    lcd.print(failed_checksum);
+   Green_Red(RED); 
  }
   else {
+    Green_Red(GREEN); 
    lcd.setCursor(0,0);
    lcd.print("Lat: ");
    lcd.print(flat);
