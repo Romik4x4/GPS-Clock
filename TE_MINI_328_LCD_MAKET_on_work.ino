@@ -243,6 +243,7 @@ void setup() {
   
   Green_Red(RED);
 
+ lcd.clear();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -309,6 +310,7 @@ void loop() {
     delay(10);
     vIN_PIN = analogRead(IN_PIN);
      if (vIN_PIN > 1000 ) {
+      lcd.clear();
       vIN_PIN = 0;
       display++;
       if (display > MAX_DISPLAY ) display = 0;       
@@ -323,6 +325,7 @@ void loop() {
         if(currentMillis - TimePreviousInterval > 5000) {
           TimePreviousInterval = currentMillis;
           set_date_time_from_gps();
+          check_gps_stat();
         } 
       }    
     }
@@ -783,8 +786,13 @@ boolean check_gps_stat( void ) {
 
   gps.crack_datetime(&year, &month, &day, &hour, &minutes, &second, &hundredths, &age);
 
-  if (age != TinyGPS::GPS_INVALID_AGE) return(true); 
-  else return(false);
+  if (age != TinyGPS::GPS_INVALID_AGE) {
+    Green_Red(GREEN); 
+    return(true); 
+  } else {
+    Green_Red(RED); 
+    return(false);
+  }
 }
 
 void set_date_time_from_gps( void ) {
@@ -855,7 +863,8 @@ void big_clock() {
   int month = bcdToDec(Wire.read());
   int year = bcdToDec(Wire.read());
 
-  lcd.clear();
+  // lcd.clear();
+  
   if (s_tochki) tochki(1);
   
   if (!upload) {  
@@ -911,25 +920,30 @@ void print_gps_stat() {
   lcd.setCursor(0,1);
   lcd.print("                ");
   
-  lcd.setCursor(0,0);
-  lcd.print(chars);
-  lcd.print(" ");
-  lcd.print(sentences);
-  lcd.print(" ");
-  lcd.print(failed_checksum);
-
   gps.f_get_position(&flat, &flon, &fix_age);
   
   lcd.setCursor(0,1);
 
   if (fix_age == TinyGPS::GPS_INVALID_AGE) {
    lcd.print("No fix detected ");
-   Green_Red(GREEN); }
+   Green_Red(GREEN); 
+   lcd.setCursor(0,0);
+   lcd.print(chars);
+   lcd.print(" ");
+   lcd.print(sentences);
+   lcd.print(" ");
+   lcd.print(failed_checksum);
+ }
   else if (fix_age > 5000) {
    lcd.print("Error stale data");
-   Green_Red(GREEN); }
+   lcd.setCursor(0,0);
+   lcd.print(chars);
+   lcd.print(" ");
+   lcd.print(sentences);
+   lcd.print(" ");
+   lcd.print(failed_checksum);
+ }
   else {
-   Green_Red(GREEN);
    lcd.setCursor(0,0);
    lcd.print("Lat: ");
    lcd.print(flat);
