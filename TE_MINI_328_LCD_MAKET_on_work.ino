@@ -320,12 +320,11 @@ void loop() {
     while (gps_p.available()) {
       char c = gps_p.read();
       if (gps.encode(c)) { 
-        Green_Red(GREEN);
         if(currentMillis - TimePreviousInterval > 5000) {
           TimePreviousInterval = currentMillis;
           set_date_time_from_gps();
         } 
-      } else { Green_Red(RED); }    
+      }    
     }
   }
   
@@ -799,6 +798,7 @@ void set_date_time_from_gps( void ) {
   if (age != TinyGPS::GPS_INVALID_AGE) {
 
     byte weekDay = 1;  // 1-7 
+    year = year - 2000; // 2014-2000;
 
     hour = hour + 4;
     if ( hour > 23 ) hour = hour - 24; 
@@ -812,7 +812,7 @@ void set_date_time_from_gps( void ) {
     Wire.write(decToBcd(weekDay));
     Wire.write(decToBcd(day));
     Wire.write(decToBcd(month));
-    Wire.write(decToBcd(year));
+    Wire.write(decToBcd(byte(year)));
 
     Wire.write(0); //start
     Wire.endTransmission();
@@ -898,13 +898,18 @@ void print_gps_stat() {
   float flat, flon;
   unsigned long fix_age;
 
+  int year;
+  byte month, day, hour, minutes, second, hundredths;
+  unsigned long age;
+
+  gps.crack_datetime(&year, &month, &day, &hour, &minutes, &second, &hundredths, &age);
+
   gps.stats(&chars, &sentences, &failed_checksum);
   
   lcd.setCursor(0,0);
   lcd.print("                ");
   lcd.setCursor(0,1);
   lcd.print("                ");
-  
   
   lcd.setCursor(0,0);
   lcd.print(chars);
@@ -917,18 +922,22 @@ void print_gps_stat() {
   
   lcd.setCursor(0,1);
 
-  if (fix_age == TinyGPS::GPS_INVALID_AGE)
+  if (fix_age == TinyGPS::GPS_INVALID_AGE) {
    lcd.print("No fix detected ");
-  else if (fix_age > 5000)
+   Green_Red(GREEN); }
+  else if (fix_age > 5000) {
    lcd.print("Error stale data");
+   Green_Red(GREEN); }
   else {
+   Green_Red(GREEN);
    lcd.setCursor(0,0);
    lcd.print("Lat: ");
    lcd.print(flat);
    lcd.setCursor(0,1);
    lcd.print("Lon: ");   
    lcd.print(flon);   
-
+ //  lcd.print(" ");
+ //  lcd.print(year);
   }
   
 }
