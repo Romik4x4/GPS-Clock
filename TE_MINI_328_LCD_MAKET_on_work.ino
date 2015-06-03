@@ -1,7 +1,7 @@
 // ============= Arduino 1.0.5 ====================
 // ============= TE-Mini 328P =====================
 // 08.05.2014 by Roma Kuzmin
-// 17.05
+// 17.05 Romik
 
 #include <TinyGPS.h>
 #include <LiquidCrystal.h>
